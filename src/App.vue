@@ -1,7 +1,7 @@
 <template>
   <p>Compteur: {{ count }}</p>
   <button @click="increment">Incrémenter</button>
-  <button v-on:click="decrement">Décrementer</button>
+  <button @click="count--">Décrementer</button>
 </template>
 
 <script setup>
@@ -13,7 +13,4 @@
     console.log(event)
   }
 
-  const decrement = () => {
-    count.value--
-  }
 </script>
