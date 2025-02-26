@@ -24,11 +24,13 @@
       </label>
     </li>
   </ul>
-  </div>
-  <label v-if="todos.length !== 0">
+
+  <label>
     <input type="checkbox" v-model="hideTodosCompleted">
     Masquer les taches completées
   </label>
+
+  </div>
 
 </template>
 
