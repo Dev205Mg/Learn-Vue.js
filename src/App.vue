@@ -18,8 +18,9 @@
       <li 
         v-for="todo in todoSorted()"
         :key="todo.date"
+        :class="{completed: todo.completed}"
         >
-        <label :class="{completed: todo.completed}">
+        <label>
           <input 
             type="checkbox" 
             v-model="todo.completed"
@@ -46,10 +47,7 @@ import { ref } from 'vue';
 
   const newTodo = ref('')
   const hideTodos = ref(false)
-  const todos = ref([
-    { "title": "Acheter la propriété 'Rue de la Paix'", "completed": true, "date": 1 },
-    { "title": "Construire un hôtel sur 'Avenue Foch'", "completed": false, "date": 2 },
-  ])
+  const todos = ref([])
 
   const addTodo = () => {
     todos.value.push({
@@ -62,7 +60,7 @@ import { ref } from 'vue';
   }
 
   const todoSorted = () => {
-    const todoSorted = todos.value.toSorted((a, b) => a.completed - b.completed)
+    const todoSorted = todos.value.toSorted((a, b) => a.completed > b.completed ? 1 : -1)
     if(hideTodos.value === true){
       return todoSorted.filter(t => t.completed !== true)
     }
