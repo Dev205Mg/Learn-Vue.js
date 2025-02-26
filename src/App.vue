@@ -2,51 +2,41 @@
   <form action="" @submit.prevent="addTodo">
     <fieldset role="group">
       <input 
-        type="text" 
-        placeholder="Ajouter un todo"
-        v-model="newTodo"
-        >
+      type="text" 
+      placeholder="Ajouter votre todo"
+      v-model="newTodo">
       <button :disabled="newTodo.length <= 3">Ajouter</button>
     </fieldset>
   </form>
-
   <div v-if="todos.length === 0">
-    Vous n'avez pas encore de tache :(
+    Aucune tache a faire pour le moment :(
   </div>
   <div v-else>
     <ul>
-      <li 
-        v-for="todo in todoSorted()"
-        :key="todo.date"
-        :class="{completed: todo.completed}"
-        >
-        <label>
-          <input 
-            type="checkbox" 
-            v-model="todo.completed"
-            :checked="todo.completed"
-            >
-          {{ todo.title }}
-        </label>
-      </li>
-
-    </ul>
-    <div>
+    <li 
+      v-for="todo in sortedTodos()"
+      :key="todo.date"
+      :class="{completed: todo.completed}"
+      >
       <label>
-        <input 
-          type="checkbox"
-          v-model="hideTodos">
-        Masquer les taches qui sont deja fait 
+        <input type="checkbox" v-model="todo.completed">
+        {{ todo.title }}
       </label>
-    </div>
+    </li>
+  </ul>
   </div>
+  <label v-if="todos.length !== 0">
+    <input type="checkbox" v-model="hideTodosCompleted">
+    Masquer les taches completées
+  </label>
+
 </template>
 
 <script setup>
-import { ref } from 'vue';
+  import { ref } from 'vue';
 
   const newTodo = ref('')
-  const hideTodos = ref(false)
+  const hideTodosCompleted = ref(false)
   const todos = ref([])
 
   const addTodo = () => {
@@ -59,18 +49,18 @@ import { ref } from 'vue';
     newTodo.value = ''
   }
 
-  const todoSorted = () => {
-    const todoSorted = todos.value.toSorted((a, b) => a.completed > b.completed ? 1 : -1)
-    if(hideTodos.value === true){
-      return todoSorted.filter(t => t.completed !== true)
+  const sortedTodos = () =>{
+    const sortedTodos = todos.value.toSorted((a, b) => a.completed > b.completed ? 1 : -1)
+    if(hideTodosCompleted.value === true){
+      return sortedTodos.filter(t => t.completed === false)
     }
-    return todoSorted
+    return sortedTodos
   }
-  
+
 </script>
 
 <style>
-  .completed {
+  .completed{
     opacity: .5;
     text-decoration: line-through;
   }
