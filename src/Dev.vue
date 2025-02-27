@@ -1,77 +1,88 @@
 <template>
+  <button @click="toggleTime = !toggleTime">Masquer / afficher</button>
+  <Timer v-if="toggleTime"/>
   <form action="" @submit.prevent="addTodo">
     <fieldset role="group">
-      <input 
-        type="text" 
-        placeholder="Ajouter un todo"
-        v-model="newTodo"
-        >
+      <input type="text" placeholder="Ajouter votre todo" v-model="newTodo">
       <button :disabled="newTodo.length <= 3">Ajouter</button>
     </fieldset>
   </form>
-
   <div v-if="todos.length === 0">
-    Vous n'avez pas encore de tache :(
+    Aucune tache a faire pour le moment :(
   </div>
   <div v-else>
     <ul>
-      <li 
-        v-for="todo in todoSorted()"
-        :key="todo.date"
-        :class="{completed: todo.completed}"
-        >
-        <label>
-          <input 
-            type="checkbox" 
-            v-model="todo.completed"
-            :checked="todo.completed"
-            >
-          {{ todo.title }}
-        </label>
+      <li v-for="todo in sortedTodos" :key="todo.date" :class="{ completed: todo.completed }">
+        <Checkbox 
+          :label="todo.title"
+          v-model="todo.completed"
+          @check=" (p) => console.log('cocher', p)"
+          @uncheck="console.log('decocher')"/>
       </li>
-
     </ul>
-    <div>
-      <label>
-        <input 
-          type="checkbox"
-          v-model="hideTodos">
-        Masquer les taches qui sont deja fait 
-      </label>
-    </div>
+
+    <label>
+      <input type="checkbox" v-model="hideTodosCompleted">
+      Masquer les taches completées
+    </label>
+
   </div>
+
+  <p v-if="remainingTodo > 0">
+    {{ remainingTodo }} tache{{ remainingTodo > 1 ? 's' : '' }} a faire
+  </p>
+
+  <Checkbox label="Bonjour"/>
+
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
+import Checkbox from './Checkbox.vue';
+import Button from './Button.vue';
+import Layout from './Layout.vue';
+import Timer from './Timer.vue';
 
-  const newTodo = ref('')
-  const hideTodos = ref(false)
-  const todos = ref([])
+const newTodo = ref('')
+const hideTodosCompleted = ref(false)
+const todos = ref([])
 
-  const addTodo = () => {
-    todos.value.push({
-      title: newTodo.value,
-      completed: false,
-      date: Date.now()
-    })
+onMounted(() => {
+  fetch('https://jsonplaceholder.typicode.com/todos?_limit=10')
+    .then(r => r.json())
+    .then(v => todos.value = v.map(todo => ({...todo, date: todo.id})))
+})
 
-    newTodo.value = ''
+const addTodo = () => {
+  todos.value.push({
+    title: newTodo.value,
+    completed: false,
+    date: Date.now()
+  })
+
+  newTodo.value = ''
+}
+
+const sortedTodos = computed(() => {
+  console.log('demo')
+  const sortedTodos = todos.value.toSorted((a, b) => a.completed > b.completed ? 1 : -1)
+  if (hideTodosCompleted.value === true) {
+    return sortedTodos.filter(t => t.completed === false)
   }
+  return sortedTodos
+})
 
-  const todoSorted = () => {
-    const todoSorted = todos.value.toSorted((a, b) => a.completed > b.completed ? 1 : -1)
-    if(hideTodos.value === true){
-      return todoSorted.filter(t => t.completed !== true)
-    }
-    return todoSorted
-  }
-  
+const remainingTodo = computed(() => {
+  return todos.value.filter(t => t.completed === false).length
+})
+
+const toggleTime = ref(true)
+
 </script>
 
 <style>
-  .completed {
-    opacity: .5;
-    text-decoration: line-through;
-  }
+.completed {
+  opacity: .5;
+  text-decoration: line-through;
+}
 </style>
