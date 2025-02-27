@@ -1,15 +1,6 @@
 <template>
-  <Layout>
-    <template #aside>
-      Sidebar
-    </template>
-    <template #main>
-      Main
-    </template>
-    <template #footer>
-      Footer
-    </template>
-  </Layout>
+  <button @click="toggleTime = !toggleTime">Masquer / afficher</button>
+  <Timer v-if="toggleTime"/>
   <form action="" @submit.prevent="addTodo">
     <fieldset role="group">
       <input type="text" placeholder="Ajouter votre todo" v-model="newTodo">
@@ -50,6 +41,7 @@ import { computed, onMounted, ref } from 'vue';
 import Checkbox from './Checkbox.vue';
 import Button from './Button.vue';
 import Layout from './Layout.vue';
+import Timer from './Timer.vue';
 
 const newTodo = ref('')
 const hideTodosCompleted = ref(false)
@@ -83,6 +75,8 @@ const sortedTodos = computed(() => {
 const remainingTodo = computed(() => {
   return todos.value.filter(t => t.completed === false).length
 })
+
+const toggleTime = ref(true)
 
 </script>
 
