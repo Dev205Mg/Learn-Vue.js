@@ -46,18 +46,20 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import Checkbox from './Checkbox.vue';
 import Button from './Button.vue';
 import Layout from './Layout.vue';
 
 const newTodo = ref('')
 const hideTodosCompleted = ref(false)
-const todos = ref([
-  { "title": "Acheter la propriété 'Rue de la Paix'", "completed": false, "date": 1 },
-  { "title": "Construire un hôtel sur 'Avenue Foch'", "completed": false, "date": 2 },
-  { "title": "Éviter la case prison", "completed": true, "date": 3 }
-])
+const todos = ref([])
+
+onMounted(() => {
+  fetch('https://jsonplaceholder.typicode.com/todos?_limit=10')
+    .then(r => r.json())
+    .then(v => todos.value = v.map(todo => ({...todo, date: todo.id})))
+})
 
 const addTodo = () => {
   todos.value.push({
