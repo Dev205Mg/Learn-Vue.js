@@ -39,7 +39,11 @@
 
   const newTodo = ref('')
   const hideTodosCompleted = ref(false)
-  const todos = ref([])
+  const todos = ref([
+    { "title": "Acheter la propriété 'Rue de la Paix'", "completed": false, "date": 1 },
+    { "title": "Construire un hôtel sur 'Avenue Foch'", "completed": false, "date": 2 },
+    { "title": "Éviter la case prison", "completed": true, "date": 3 }
+  ])
 
   const addTodo = () => {
     todos.value.push({
