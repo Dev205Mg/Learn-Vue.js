@@ -1,4 +1,7 @@
 <template>
+  <Button>
+    <strong>Ajouter</strong> un strong
+  </Button>
   <form action="" @submit.prevent="addTodo">
     <fieldset role="group">
       <input type="text" placeholder="Ajouter votre todo" v-model="newTodo">
@@ -37,6 +40,7 @@
 <script setup>
 import { computed, ref } from 'vue';
 import Checkbox from './Checkbox.vue';
+import Button from './Button.vue';
 
 const newTodo = ref('')
 const hideTodosCompleted = ref(false)
